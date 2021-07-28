@@ -6,6 +6,7 @@ const Router = require('@koa/router');
 const body = require('koa-body');
 const serve = require('koa-static');
 const User = require('./user');
+const packageJson = require('./package.json');
 
 // Create express instance
 const app = new Koa();
@@ -42,6 +43,9 @@ app.use(router.routes()).use(router.allowedMethods());
 router.get('/api/status', (ctx) => {
   ctx.body = {
     code: 200,
+    data: {
+      version: packageJson.version,
+    },
     message: 'Ninja is already.',
   };
 });
@@ -59,6 +63,7 @@ router.get('/api/qrcode', async (ctx) => {
     okl_token: user.okl_token,
     cookies: user.cookies,
     QRCode: user.QRCode,
+    ua: user.ua,
   };
 });
 
@@ -99,7 +104,7 @@ router.post('/api/update/remark', body(), async (ctx) => {
   const user = new User({ eid, remark });
   const data = await user.updateRemark();
   ctx.body.data = data;
-})
+});
 
 router.get('/api/users', async (ctx) => {
   if (ctx.host.startsWith('localhost')) {
@@ -113,4 +118,6 @@ router.get('/api/users', async (ctx) => {
   }
 });
 
-app.listen(5701);
+const port = process.env.PORT || 5701;
+console.log('Start Ninja success! listening port: ' + port);
+app.listen(port);
