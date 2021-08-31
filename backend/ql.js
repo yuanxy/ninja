@@ -9,7 +9,7 @@ const qlDir = process.env.QL_DIR || '/ql';
 const authFile = path.join(qlDir, 'config/auth.json');
 
 const api = got.extend({
-  prefixUrl: process.env.QL_URL || 'http://localhost:5600',
+  prefixUrl: process.env.QL_URL || 'http://192.168.0.80:5700',
   retry: { limit: 0 },
 });
 
@@ -45,14 +45,14 @@ module.exports.addEnv = async (cookie, remarks) => {
     method: 'post',
     url: 'api/envs',
     params: { t: Date.now() },
-    json: {
+    json: [{
       name: 'JD_COOKIE',
       value: cookie,
       remarks,
-    },
+    }],
     headers: {
       Accept: 'application/json',
-      authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json;charset=UTF-8',
     },
   }).json();
